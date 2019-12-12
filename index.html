@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+        <title>Flickr Storm</title>
+        <meta charset="utf-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <!--Linking our flickr javascript page-->
+        <script src="flickr.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+        
+    </head>
+
+    <body>
+        <div class="container">
+            <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner" role="listbox" id="carousel-inner"></div>
+        
+                <!-- Left and right controls -->
+                <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div> <!--myCarousel-->
+        </div> <!--container-->
+    <div id="label"> </div>
+    </body>
+    <style>
+        .carousel-inner > .item > img,
+        .carousel-inner > .item > a > img {
+            max-width: 70%;
+            max-height: 345px;
+            height: 345px;
+            margin: auto;
+        }
+
+        #label {
+            text-align: center;
+        }
+    </style>
+</html>
