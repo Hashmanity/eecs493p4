@@ -52,7 +52,6 @@ function getInterestingImages(date_in) {
         console.log(response);
         // Go through each photo in the json
        $.each(response.photos.photo, function (i, photo) {
-            idList.push(photo.id);
             var src = "https://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + "_c.jpg";
 
             let active;
@@ -71,7 +70,6 @@ function getInterestingImages(date_in) {
             // Insert the .item div into the .carousel-inner div
             $(".carousel-inner").append(itemDivHtml);
         })
-
         $("#label").text("Interestingness: " + textDate);
     }) // then
     .catch(error => {
@@ -96,15 +94,16 @@ function keydownRouter(e) {
         
         case KEYS.five:
             let currentImageID = $('.item.active').attr("id");
-            console.log(currentImageID);
             switchtoGallery(currentImageID);
             break;
 
         case KEYS.seven:
+            console.log("pausing");
             $("#myCarousel").carousel("pause");
             break;
         
         case KEYS.nine:
+            console.log("resuming");
             $("#myCarousel").carousel("cycle");
             break;
 
@@ -116,7 +115,6 @@ function keydownRouter(e) {
 function startOver() {
     console.log("reverting back to the start");
     // Remove elements
-    $('.heading').remove();
     $('.item').remove();
     getInterestingImages(startDate);
 }
@@ -126,7 +124,6 @@ function switchToCarousel() {
     console.log("reverting back to our carousel");
     
     // Remove elements
-    $('.heading').remove();
     $('.item').remove();
     getInterestingImages(currentDate);
 }
@@ -141,43 +138,60 @@ function generateNewSet() {
     getInterestingImages(currentDate);
 }
 
-function switchtoGallery(imageID) {
-    console.log("getting gallery");
-    $.ajax({
-        url: "https://api.flickr.com/services/rest",
-        type: "GET",
-        data: {
-            method: "flickr.galleries.getListForPhoto",
-            api_key: "ace69d5a68863feaef191c820d2d4179",
-            photo_id: imageID,
-            per_page: 10,
-            format: "json",
-            nojsoncallback: 1,
-        }
-    }) // AJAX
-    .then(response => {
-        return response.galleries.gallery[0].gallery_id;
-    }) // then first
-
-    .then(response => {
-        let galleryID = response;
-        console.log(galleryID);
+function getGalleryInfo(imageID) {
+    console.log("getting gallery information");
+    return new Promise((resolve, reject) => {
         $.ajax({
             url: "https://api.flickr.com/services/rest",
             type: "GET",
             data: {
-                method: "flickr.galleries.getPhotos",
+                method: "flickr.galleries.getListForPhoto",
                 api_key: "ace69d5a68863feaef191c820d2d4179",
-                gallery_id: galleryID,
+                photo_id: imageID,
                 per_page: 10,
                 format: "json",
                 nojsoncallback: 1,
-            } 
-        }) // AJAX
+            },
+            success: function(data) {
+                resolve(data);
+            },
+            error: function(error) {
+                reject(error)
+            },
+        })
+    })
+}
+    
+
+function switchtoGallery(imageID) {
+    getGalleryInfo(imageID)
         .then(response => {
-            console.log("got the gallery images now");
+            return response.galleries.gallery[0].gallery_id
+        })
+        .then(response => {
+            let galleryID = response;
+            console.log(galleryID);
+            let new_data = $.ajax({
+                url: "https://api.flickr.com/services/rest",
+                type: "GET",
+                data: {
+                    method: "flickr.galleries.getPhotos",
+                    api_key: "ace69d5a68863feaef191c820d2d4179",
+                    gallery_id: galleryID,
+                    per_page: 10,
+                    format: "json",
+                    nojsoncallback: 1,
+                } 
+            })
+            return new_data;
+        })
+        .then(response => {
+            console.log("got the gallery images from the api call, now to render them");
             console.log(response);
+            $('.item').remove();
+
             $.each(response.photos.photo, function (i, photo) {
+                console.log("HELLO")
                 var src = "https://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + "_c.jpg";
     
                 let active;
@@ -191,14 +205,18 @@ function switchtoGallery(imageID) {
     
                 // Create the .item div and insert the img html into it
                 // This is better done in css
-                let itemDivHtml = $("<div class='item" + active + "' width='460' height='345'/>").append(imgHtml);
+                let itemDivHtml = $("<div id=" + photo.id + " class='item" + active + "' width='460' height='345'/>").append(imgHtml);
     
                 // Insert the .item div into the .carousel-inner div
                 $(".carousel-inner").append(itemDivHtml);
             })
-        }) // nested then
-    }) // then second
+            $("#label").text("Interestingness: " + textDate);
+        })
+        .catch(error => {
+            console.log("MICHIGAN PHOTO HERE")
+        })
 }
+
 
 function getFormattedDate(offset) {
     date = new Date();
