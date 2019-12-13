@@ -5,6 +5,10 @@ var dateOffset = 1;
 var currentSlide = 0;
 var startDate;
 var idList = [];
+var errorImages = [
+    "https://web.eecs.umich.edu/~ackerm/exception-images/exception1.jpg",
+    "https://web.eecs.umich.edu/~ackerm/exception-images/exception2.jpg"
+];
 
 
 var KEYS = {
@@ -218,8 +222,33 @@ function switchtoGallery(imageID) {
             $("#label").text("Gallery View");
         })
         .catch(error => {
-            console.log("MICHIGAN PHOTO HERE")
+            console.log("no gallery found, rendering michigan photos");
+            renderErrorImages();
         })
+}
+
+
+function renderErrorImages() {
+    $('.item').remove();
+    let active;
+
+    for (let i = 0; i < errorImages.length; i++) {
+        if (i == 0) {
+        active = " active";
+        } else {
+        active = "";
+        }
+
+        // Create the img html and set the src attribute to our URL
+        let imgHtml = $("<img/>").attr("src", errorImages[i]);
+
+        // Create the .item div and insert the img html into it
+        // This is better done in css
+        let itemDivHtml = $("<div class='item" + active + "' width='460' height='345'/>").append(imgHtml);
+        $(".carousel-inner").append(itemDivHtml);
+        $("#label").text("");
+
+    }
 }
 
 
