@@ -22,9 +22,7 @@ var KEYS = {
 
 /// Functional Code ///
 // https://blog.revathskumar.com/2016/06/why-i-prefer-ajax-promise.html
-// ace69d5a68863feaef191c820d2d4179
-// e42514e058197300
-// cycle pause cycle
+
 
 // Main
 $(document).ready( function() {
