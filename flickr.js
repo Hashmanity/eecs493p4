@@ -116,6 +116,7 @@ function startOver() {
     console.log("reverting back to the start");
     // Remove elements
     $('.item').remove();
+    dateOffset = 1;
     getInterestingImages(startDate);
 }
 
@@ -187,11 +188,10 @@ function switchtoGallery(imageID) {
         })
         .then(response => {
             console.log("got the gallery images from the api call, now to render them");
-            console.log(response);
+
             $('.item').remove();
 
             $.each(response.photos.photo, function (i, photo) {
-                console.log("HELLO")
                 var src = "https://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + "_c.jpg";
     
                 let active;
@@ -209,8 +209,13 @@ function switchtoGallery(imageID) {
     
                 // Insert the .item div into the .carousel-inner div
                 $(".carousel-inner").append(itemDivHtml);
+
+                // Loop until 10 images
+                if (i === 9) {
+                    return false;
+                }
             })
-            $("#label").text("Interestingness: " + textDate);
+            $("#label").text("Gallery View");
         })
         .catch(error => {
             console.log("MICHIGAN PHOTO HERE")
